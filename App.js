@@ -7,11 +7,13 @@ import {
   Text,
   CameraRoll,
   Linking,
+  ImageEditor, 
 } from 'react-native';
+import ImageResizer from 'react-native-image-resizer';
 
 export default class App extends React.Component {
   state = {
-    imageUri: 'http://dl1.cbsistatic.com/i/r/2016/08/30/34437029-0b8e-4199-ad8e-ac61e406ea8a/thumbnail/64x64/9ecbab204d5fc866672bfdc30400df40/imgingest-4464096019476136973.png',
+    imageUri: 'https://www.toornament.com/media/file/572269837784555520/logo_small?v=1500283770',
   }
 
   render() {
@@ -31,7 +33,7 @@ export default class App extends React.Component {
           <TouchableOpacity
             style={styles.button}
             onPress={this._onSlack}>
-            <Text>toslack!</Text>
+            <Text>to slack!</Text>
           </TouchableOpacity>
         </View>
 
@@ -77,15 +79,13 @@ export default class App extends React.Component {
   }
 
   _onSave = async () => {
-    console.log(!!this.memeView);
     const uri = await Expo.takeSnapshotAsync(this.memeView);
     console.log("took snapshot");
     await CameraRoll.saveToCameraRoll(uri);
   }
 
   _onSlack = async () => {
-    this._onSave()
-
+    this.crop()
     Linking.canOpenURL("https://slack.com/customize/emoji").then(supported => {
       if (supported) {
         Linking.openURL("https://slack.com/customize/emoji");
@@ -95,7 +95,18 @@ export default class App extends React.Component {
       }
     });
   }
+
+  async crop() {
+    ImageEditor.cropImage(
+      this.state.imageUri, 
+      { offset: { x: 0, y: 0 }, size: { width: 128, height: 128 }}, 
+      successURI => CameraRoll.saveToCameraRoll(successURI), 
+      error => console.log(error.message)
+    )
+  }
 }
+
+
 
 const styles = StyleSheet.create({
   button: {
