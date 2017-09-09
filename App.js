@@ -11,7 +11,7 @@ import {
 
 export default class App extends React.Component {
   state = {
-    imageUri: 'https://vignette3.wikia.nocookie.net/althistory/images/2/2a/128px-Simple_gold_crown.svg-2.png',
+    imageUri: 'http://dl1.cbsistatic.com/i/r/2016/08/30/34437029-0b8e-4199-ad8e-ac61e406ea8a/thumbnail/64x64/9ecbab204d5fc866672bfdc30400df40/imgingest-4464096019476136973.png',
   }
 
   render() {
@@ -23,7 +23,7 @@ export default class App extends React.Component {
           ref={(ref) => this.memeView = ref}>
           <Image
             source={{ uri: this.state.imageUri }}
-            style={{ width: 300, height: 300 }}
+            style={{ width: 128, height: 128 }}
           />
         </View>
 
