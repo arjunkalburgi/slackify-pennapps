@@ -1,22 +1,32 @@
 import React from 'react';
 import {
   StyleSheet,
+  Text,
   View,
   TouchableOpacity,
   Image,
-  Text,
+  TextInput,
   CameraRoll,
-  Linking,
 } from 'react-native';
 
 export default class App extends React.Component {
   state = {
-    imageUri: 'https://vignette3.wikia.nocookie.net/althistory/images/2/2a/128px-Simple_gold_crown.svg-2.png',
+    imageUri: 'http://i0.kym-cdn.com/photos/images/original/000/008/504/Philosoraptor_template.jpg',
+    topText: '',
+    bottomText: '',
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => this.setState({ topText: text })}
+        />
+        <TextInput
+          style={styles.input}
+          onChangeText={(text) => this.setState({ bottomText: text })}
+        />
 
         <View
           style={{ margin: 5 }}
@@ -25,14 +35,14 @@ export default class App extends React.Component {
             source={{ uri: this.state.imageUri }}
             style={{ width: 300, height: 300 }}
           />
-        </View>
-
-        <View style={{ flexDirection: 'row' }}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={this._onSlack}>
-            <Text>toslack!</Text>
-          </TouchableOpacity>
+          <Text
+            style={[styles.text, { top: 5 }]}>
+            {this.state.topText}
+          </Text>
+          <Text
+            style={[styles.text, { bottom: 5 }]}>
+            {this.state.bottomText}
+          </Text>
         </View>
 
         <View style={{ flexDirection: 'row' }}>
@@ -77,27 +87,31 @@ export default class App extends React.Component {
   }
 
   _onSave = async () => {
-    console.log(!!this.memeView);
+    console.log(this.state.imageUri)
     const uri = await Expo.takeSnapshotAsync(this.memeView);
-    console.log("took snapshot");
+    console.log(uri)
     await CameraRoll.saveToCameraRoll(uri);
-  }
-
-  _onSlack = async () => {
-    this._onSave()
-
-    Linking.canOpenURL("https://slack.com/customize/emoji").then(supported => {
-      if (supported) {
-        Linking.openURL("https://slack.com/customize/emoji");
-
-      } else {
-        console.log("Don't know how to open URI: " + this.props.url);
-      }
-    });
   }
 }
 
 const styles = StyleSheet.create({
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    alignSelf: 'stretch',
+    margin: 5,
+    padding: 5,
+  },
+  text: {
+    position: 'absolute',
+    left: 5, right: 5,
+    color: 'white',
+    backgroundColor: 'transparent',
+    fontSize: 28,
+    fontWeight: '900',
+    textAlign: 'center',
+  },
   button: {
     padding: 5,
     margin: 5,
