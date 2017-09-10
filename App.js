@@ -9,7 +9,7 @@ import {
   Linking,
   ImageEditor, 
 } from 'react-native';
-import ImageResizer from 'react-native-image-resizer';
+
 
 export default class App extends React.Component {
   state = {
@@ -85,7 +85,8 @@ export default class App extends React.Component {
   }
 
   _onSlack = async () => {
-    this.crop()
+    // this.crop()
+    this.scale()
     Linking.canOpenURL("https://slack.com/customize/emoji").then(supported => {
       if (supported) {
         Linking.openURL("https://slack.com/customize/emoji");
@@ -103,6 +104,13 @@ export default class App extends React.Component {
       successURI => CameraRoll.saveToCameraRoll(successURI), 
       error => console.log(error.message)
     )
+  }
+
+  async scale() {
+    // request kraked_url from server 
+
+    // saveToCameraRoll if success 
+    // this.crop() if fail
   }
 }
 
