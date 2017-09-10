@@ -67,47 +67,7 @@ export default class App extends React.Component {
       base64: false,
     });
 
-    console.log(cancelled); 
-    if (cancelled) {
-      return 
-    }
-
-    this.setState({
-      imageUri: uri,
-    });
-
-    let uriParts = uri.split('/');
-    let fileName = uriParts[uriParts.length - 1];
-    let fileNameBreakDown = fileName.split('.'); 
-    let fileType = fileNameBreakDown[fileNameBreakDown.length - 1]; 
-
-    console.log(fileName)
-
-    let formData = new FormData();
-    formData.append('photo', {
-      uri,
-      name: uriParts[uriParts.length - 2],// `expo-upload.${fileType}`,
-      type: `image/${fileType}`,
-    });
-
-    console.log(JSON.stringify(formData)); 
-
-    const key = 'AIzaSyA6wUzO8HUWVhGvuNxhGGhwkOlAXZeXDd8';
-    const response = await fetch(`https://storage.googleapis.com/applyingautomatically.appspot.com/expo-uploads/${formData.name}?key=${key}`, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: formData,
-    });
-    console.log("\nresponse:\n"); 
-    console.log(response); 
-    const parsed = await response.json();
-    console.log(parsed.responses[0].labelAnnotations[0].description); 
-    // this.setState({
-    //   label: parsed.responses[0].labelAnnotations[0].description,
-    // });
+    this.upload(cancelled, uri)
   }
 
 
@@ -151,8 +111,8 @@ export default class App extends React.Component {
 
   async scale() {
     // request kraked_url from server 
-    console.log("before upload")
-    this.upload()
+    console.log("before retrieve")
+    // this.upload()
 
     // call server function 
     // let uriParts = uri.split('.');
@@ -162,49 +122,46 @@ export default class App extends React.Component {
     // this.crop() if fail
   };
 
-  async upload() {
-    let uploadResponse, uploadResult;
-    console.log("before uploadResponse")
-    uploadResponse = await uploadImageAsync(this.state.imageUri);
-    console.log("after uploadResult"); 
-    uploadResult = await uploadResponse.json();
-    this.setState({ image: uploadResult.location });
+  async upload(cancelled, uri) {
+    // console.log(cancelled); 
+    if (cancelled) {
+      return 
+    }
+
+    this.setState({
+      imageUri: uri,
+    });
+
+    let uriParts = uri.split('/');
+    let fileName = uriParts[uriParts.length - 1];
+    let fileNameBreakDown = fileName.split('.'); 
+    let fileType = fileNameBreakDown[fileNameBreakDown.length - 1]; 
+
+    // console.log(fileName)
+
+    let formData = new FormData();
+    formData.append('photo', {
+      uri,
+      name: fileName,
+      type: `image/${fileType}`,
+    });
+
+    console.log(JSON.stringify(formData)); 
+
+    const key = 'AIzaSyA6wUzO8HUWVhGvuNxhGGhwkOlAXZeXDd8';
+    const response = await fetch(`https://storage.googleapis.com/applyingautomatically.appspot.com/expo-uploads/${formData.name}?key=${key}`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: formData,
+    });
+    const responseText = await response.text();
+    if (responseText) {
+      Alert("upload did not work"); 
+    }
   }; 
-}
-
-async function uploadImageAsync(uri) {
-  let apiUrl = 'https://storage.googleapis.com/applyingautomatically.appspot.com/expo-uploads/';
-
-  // Note:
-  // Uncomment this if you want to experiment with local server
-  //
-  // if (Constants.isDevice) {
-  //   apiUrl = `https://your-ngrok-subdomain.ngrok.io/upload`;
-  // } else {
-  //   apiUrl = `http://localhost:3000/upload`
-  // }
-
-  let uriParts = uri.split('.');
-  let fileType = uriParts[uri.length - 1];
-
-  let formData = new FormData();
-  formData.append('photo', {
-    uri,
-    name: `expo-upload`,
-    type: `image/${fileType}`,
-  });
-
-  let options = {
-    method: 'POST',
-    body: formData,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'multipart/form-data',
-    },
-  };
-
-  console.log("before fetch")
-  return fetch(apiUrl, options);
 }
 
 const styles = StyleSheet.create({
