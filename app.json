@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "memeify",
+    "name": "slackify",
     "description": "An empty new project",
-    "slug": "memeify",
+    "slug": "slackify",
     "privacy": "public",
     "sdkVersion": "20.0.0",
     "version": "1.0.0",
